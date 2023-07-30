@@ -1,26 +1,32 @@
 services:
-  web:
-    build: ./web
+  # web:
+  #   build: ./web
+  #   ports:
+  #     - 3000:3000
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     AUTH_SECRET: "TeeTuanmuan"
+  #     DATABASE_URL: "postgresql://postgres:GaythaiPassmanStandardboy@postgres/schedule-api-v2"
+  #   volumes:
+  #     # for development
+  #     - ./web/components:/usr/src/app/components
+  #     - ./web/composables:/usr/src/app/composables
+  #     - ./web/layouts:/usr/src/app/layouts
+  #     - ./web/pages:/usr/src/app/pages
+  #     - ./web/plugins:/usr/src/app/plugins
+  #     - ./web/server:/usr/src/app/server
+  #     - ./web/types:/usr/src/app/types
+  #     - ./web/utils:/usr/src/app/utils
+  #     - ./web/public:/usr/src/public
+  #     # Fuck other file
+  #   command: "npx prisma db push"
+  rust-server:
+    build:
+      context: ./server/rust
+      target: final
     ports:
-      - 3000:3000
-    depends_on:
-      - postgres
-    environment:
-      AUTH_SECRET: "TeeTuanmuan"
-      DATABASE_URL: "postgresql://postgres:GaythaiPassmanStandardboy@postgres/schedule-api-v2"
-    volumes:
-      # for development
-      - ./web/components:/usr/src/app/components
-      - ./web/composables:/usr/src/app/composables
-      - ./web/layouts:/usr/src/app/layouts
-      - ./web/pages:/usr/src/app/pages
-      - ./web/plugins:/usr/src/app/plugins
-      - ./web/server:/usr/src/app/server
-      - ./web/types:/usr/src/app/types
-      - ./web/utils:/usr/src/app/utils
-      - ./web/public:/usr/src/public
-      # Fuck other file
-    command: "npx prisma db push"
+      - 4574:4574
   postgres:
     image: "postgres"
     restart: always
