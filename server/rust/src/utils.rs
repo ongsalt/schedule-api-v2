@@ -62,6 +62,17 @@ impl<T> APIRespond<T> {
     }
 }
 
+#[derive(Serialize)]
+pub struct APIRespondNotInSchoolTime {
+    is_in_school_time: bool
+}
+
+impl APIRespondNotInSchoolTime {
+    pub fn new() -> APIRespondNotInSchoolTime {
+        APIRespondNotInSchoolTime { is_in_school_time: false }
+    }
+}
+
 
 /*
     m65 65 will fail

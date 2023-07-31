@@ -40,7 +40,7 @@ async fn get_current(db: web::Data<Db>, params: web::Path<(String, String)>) -> 
     let Period {day, period, is_in_school_time } = utils::get_current_period();
 
     if !is_in_school_time {
-        return HttpResponse::Ok().json(APIRespond::new_ok("{ \"isInSchoolTime\": false }"));
+        return HttpResponse::Ok().json(APIRespond::new_ok(utils::APIRespondNotInSchoolTime::new()));
     }
 
     let schedule = db.get_schedule(year, class, day, period).await;
