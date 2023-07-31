@@ -40,6 +40,7 @@ pub struct APISchedule {
 }
 
 #[derive(Serialize)]
+#[serde(untagged)]
 pub enum APIRespond<T> {
     Ok {
         ok: bool,
