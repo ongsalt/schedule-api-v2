@@ -35,11 +35,26 @@ impl Db {
 
     pub async fn get_schedule(
         &self,
-        for_year: i32,
-        for_class: i32,
-        day: i32,
-        period: i32,
+        for_year: u32,
+        for_class: u32,
+        day: u32,
+        period: u32,
     ) -> Result<APISchedule, &'static str> {
+
+        let for_year = i32::try_from(for_year); 
+        let for_class = i32::try_from(for_class); 
+        let day = i32::try_from(day); 
+        let period = i32::try_from(period); 
+
+        if for_year.is_err() || for_class.is_err() || day.is_err() || period.is_err() {
+            return Err("Integer out of bound");
+        }
+
+        let for_year = for_year.unwrap(); 
+        let for_class = for_class.unwrap(); 
+        let day = day.unwrap(); 
+        let period = period.unwrap(); 
+
         let res = sqlx::query_as::<_, Field>(
             "
             SELECT \"Subject\".name, \"Subject\".code, \"Subject\".link, \"Schedule\".room, \"Teacher\".name  from \"Schedule\" 
@@ -74,6 +89,7 @@ impl Db {
                 teachers: data.iter().map(|it| it.teacher_name.to_owned()).collect(),
                 day: u32::try_from(day).unwrap(),
                 period: u32::try_from(period).unwrap(),
+                is_in_school_time: (period <= 9) && (period > 0)
             })
         }
     }

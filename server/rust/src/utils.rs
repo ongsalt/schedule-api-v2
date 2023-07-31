@@ -22,9 +22,9 @@ struct Schedule {
 
 #[derive(Serialize)]
 pub struct Period {
-    is_in_school_time: bool,
-    day: u32,
-    period: u32,
+    pub is_in_school_time: bool,
+    pub day: u32,
+    pub period: u32,
 }
 
 #[derive(Serialize)]
@@ -37,6 +37,7 @@ pub struct APISchedule {
     pub teachers: Vec<String>,
     pub day: u32,
     pub period: u32,
+    pub is_in_school_time: bool,
 }
 
 #[derive(Serialize)]
@@ -69,11 +70,11 @@ impl<T> APIRespond<T> {
 
     mhhdcufych6kdjbhjrvjef5 -> 6,5
 */
-pub fn parse_class(str: &String) -> Result<(i32, i32), &'static str> {
+pub fn parse_class(str: &String) -> Result<(u32, u32), &'static str> {
     let mut is_previous_numberic = false;
-    let mut first_digit: Option<i32> = None;
-    let mut second_digit: Option<i32> = None;
-    let mut temp: i32 = 0;
+    let mut first_digit: Option<u32> = None;
+    let mut second_digit: Option<u32> = None;
+    let mut temp: u32 = 0;
 
     println!("{str}");
 
@@ -81,7 +82,7 @@ pub fn parse_class(str: &String) -> Result<(i32, i32), &'static str> {
         if c.is_numeric() {
             // println!("{c} is numeric");
             temp *= 10;
-            temp += i32::try_from(c.to_digit(10).unwrap()).expect("Integer out of bound");
+            temp += c.to_digit(10).unwrap();
             is_previous_numberic = true;
         } else {
             if is_previous_numberic {
@@ -109,6 +110,20 @@ pub fn parse_class(str: &String) -> Result<(i32, i32), &'static str> {
     }
 
     Ok((first_digit.unwrap(), second_digit.unwrap()))
+}
+
+pub fn parse_period(period: &String) -> Result<i32, &'static str> {
+    let padding = period.parse::<i32>();
+    if padding.is_ok() {
+        return Ok(padding.unwrap());
+    }
+
+    match period.to_lowercase().as_str() {
+        "c" | "current" => Ok(0),
+        "n" | "next" => Ok(1),
+        "p" | "previous" => Ok(-1),
+        _ => Err("Unknow period")
+    }
 }
 
 pub fn get_current_period() -> Period {

@@ -6,6 +6,7 @@ mod utils;
 type Db = db::Db;
 type APIRespond<T> = utils::APIRespond<T>;
 type APISchedule = utils::APISchedule;
+type Period = utils::Period;
 
 /*
     Todo
@@ -22,14 +23,34 @@ async fn hello() -> impl Responder {
 async fn get_current(db: web::Data<Db>, params: web::Path<(String, String)>) -> impl Responder {
     println!("First route triggered");
     let (class, target) = params.to_owned();
-    if let Ok((year, class)) = utils::parse_class(&target) {
-        println!("Get {year}/{class}");
-        let schedule = db.get_schedule(year, class, 1, 1).await;
-        HttpResponse::Ok().body("Ok")
-    } else {
-        // println!("Panic");
-        HttpResponse::BadRequest().body("Gaythai")
+
+    let parsed = utils::parse_class(&class);
+    if let Err(message) = parsed {
+        return HttpResponse::BadRequest()
+            .json(APIRespond::<APISchedule>::new_error(message.into()));
     }
+    let (year, class) = parsed.unwrap();
+
+    let target = utils::parse_period(&target);
+    if let Err(message) = target {
+        return HttpResponse::BadRequest()
+            .json(APIRespond::<APISchedule>::new_error(message.into()));
+    }
+
+    let Period {day, period, is_in_school_time } = utils::get_current_period();
+
+    if !is_in_school_time {
+        return HttpResponse::Ok().json(APIRespond::new_ok("{ \"isInSchoolTime\": false }"));
+    }
+
+    let schedule = db.get_schedule(year, class, day, period).await;
+    println!("Get {year}/{class}:{day}-{period}");
+
+    if let Err(message) = schedule {
+        return HttpResponse::NotFound().json(APIRespond::<APISchedule>::new_error(message.into()));
+    }
+
+    HttpResponse::Ok().json(APIRespond::new_ok(schedule.unwrap()))
 }
 
 #[get("/api/schedule/{class}/{day}/{period}")]
@@ -37,17 +58,6 @@ async fn get_select(db: web::Data<Db>, params: web::Path<(String, u32, u32)>) ->
     println!("Second route triggered");
     let (target, day, period) = params.to_owned();
     let parsed = utils::parse_class(&target);
-
-    let day = i32::try_from(day);
-    let period = i32::try_from(period);
-
-    if day.is_err() || period.is_err() {
-        return HttpResponse::BadRequest()
-            .json(APIRespond::<APISchedule>::new_error("Integer out of bound".into()));
-    }
-
-    let day = day.unwrap();
-    let period = period.unwrap();
 
     if let Err(message) = parsed {
         return HttpResponse::BadRequest()
