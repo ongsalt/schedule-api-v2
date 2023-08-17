@@ -130,7 +130,7 @@ pub fn parse_period(period: &String) -> Result<i32, &'static str> {
     }
 
     match period.to_lowercase().as_str() {
-        "c" | "current" => Ok(0),
+        "c" | "current" | "" => Ok(0),
         "n" | "next" => Ok(1),
         "p" | "previous" => Ok(-1),
         _ => Err("Unknow period")
