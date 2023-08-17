@@ -32,13 +32,13 @@ services:
     environment:
       DATABASE_URL: "postgresql://postgres:GaythaiPassmanStandardboy@postgres/schedule-api-v2"
   
-  elysia-server:
-    build:
-      context: ./server/elysia
-    environment:
-      NODE_ENV: production
-    ports:
-      - 4575:4575
+  # elysia-server:
+  #   build:
+  #     context: ./server/elysia
+  #   environment:
+  #     NODE_ENV: production
+  #   ports:
+  #     - 4575:4575
 
   postgres:
     image: "postgres"
