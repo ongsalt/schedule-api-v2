@@ -7,7 +7,9 @@ export type Schedule = {
     teachers: string[],
     day: number,
     period: number,
-    isInSchoolTime: boolean,
+    isInSchoolTime: true,
+} | {
+    isInSchoolTime: false,
 }
 
 export type ScheduleAPIResponse = {

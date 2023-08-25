@@ -1,10 +1,9 @@
 import { EmbedBuilder } from "discord.js";
 import { Schedule } from "../model/schedule";
 
-export function generateReply(data: Schedule, padding: string) {
+export function createReply(data: Schedule, padding: string) {
     const embed = new EmbedBuilder()
     embed.setColor('#2f61e0')
-        .setTitle(data.subjectName)
 
     switch (padding) {
         case 'c':
@@ -19,6 +18,13 @@ export function generateReply(data: Schedule, padding: string) {
         default:
             embed.setAuthor({ name: 'คาบเรียนถัดไป' })
     }
+
+    if (!data.isInSchoolTime) {
+        embed.setTitle("ไม่ได้อยู่ในเวลาเรียน")
+        return embed
+    }
+
+    embed.setTitle(data.subjectName)
 
     let description = ''
     if (data.teachers.length != 0) {
@@ -43,5 +49,14 @@ export function generateReply(data: Schedule, padding: string) {
 
     if(process.env.device) embed.setColor('#f5da42')
 
+    return embed
+}
+
+export function createErrorMessage(message?: string) {
+    const embed = new EmbedBuilder()
+    embed.setColor('#2f61e0')
+        .setTitle("An error occured")
+        .setAuthor({ name: "Bot" })
+        .setDescription(message ?? "Service is unreachable. Please ensure that API server is running")
     return embed
 }

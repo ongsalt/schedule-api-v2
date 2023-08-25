@@ -3,14 +3,18 @@ import { ApiUrl } from "./url"
 
 export async function getCurrentPeriod(c: string, target: string): Promise<Schedule> {
     try {
-        const res = await fetch(ApiUrl.current(c, target))
+        const url = ApiUrl.current(c, target)
+        console.log(`fetching ${url}`);
+        const res = await fetch(url)
         const data = await res.json() as ScheduleAPIResponse
         if (data.ok) {
+            console.log(data.data)
             return data.data
         } else {
             throw new Error("Not found")
         }
     } catch(e) {
+        console.error(e)
         throw e
     }
 }

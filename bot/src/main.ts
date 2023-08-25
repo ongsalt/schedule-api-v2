@@ -1,7 +1,8 @@
 import { ActivityType, Client, GatewayIntentBits, Partials } from "discord.js"
 import { config } from "dotenv"
 import { getCurrentPeriod } from "./lib/api"
-import { generateReply } from "./lib/reply"
+import { createReply, createErrorMessage } from "./lib/reply"
+import { getApiUrl } from "./lib/url"
 
 config()
 
@@ -18,6 +19,7 @@ client.on('ready', () => {
         const presence = client.user!.setActivity('rewrite becuase I can', { type: ActivityType.Watching })
         console.log(`Activity set to ${presence.activities[0].name}`)
     }
+    console.log(`[main] url: ${getApiUrl()}`)
     console.log('[main] Ready')
 })
 
@@ -27,19 +29,37 @@ client.on('interactionCreate', async (interaction) => {
     }
 
     switch (interaction.commandName) {
-        case 'ping': await interaction.reply("Hello from *somewhere i deploy")
+        case 'ping': 
+        await interaction.reply("Hello from *somewhere i deploy")
+        break
         case 's': {
-            console.log(interaction.options.data[0].value)
-            // const target = "c"
-            const target = interaction.options.data[0].value! as string
-            const className = "m6-5"
-            // console.log(interaction.options.data)
-            const schedule = await getCurrentPeriod(className, target)
-            const reply = generateReply(schedule, target)
-            interaction.reply({
-                embeds: [reply]
-            })
+            await interaction.deferReply();
+            const target = interaction.options.data?.at(0)?.value as string ?? "c"
+            console.log(target)
+            // change later
 
+            if (target === "f") {
+                await interaction.editReply("Visit the website for more details.")
+                return
+            }
+
+            const className = "m6-5"
+            try {
+                // console.log(interaction.options.data)
+                const schedule = await getCurrentPeriod(className, target)
+                const reply = createReply(schedule, target)
+                await interaction.editReply({
+                    embeds: [reply]
+                })
+            } catch(e) {
+                const msg = e?.toString() ?? undefined
+                console.log(`[main] ${msg}`)
+                console.log(e)
+                await interaction.editReply({
+                    embeds: [createErrorMessage(msg)]
+                })
+            }
+            break
         }
     }
 })
