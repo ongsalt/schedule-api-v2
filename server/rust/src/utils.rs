@@ -46,6 +46,7 @@ pub struct APISchedule {
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
+#[serde(untagged)]
 pub enum APIRespond<T> {
     Ok {
         ok: bool,
