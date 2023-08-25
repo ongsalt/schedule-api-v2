@@ -67,9 +67,8 @@ services:
     build: ./bot
     depends_on:
       - rust-server
-    environment:
-      - CLIENT_TOKEN=OTc1OTU2MzgyNDg0NDAyMTc3.Gn2FGv.mYVGUmghQEJ_J2EVE_RwoPgLycNmTDbxWo0bmI
-      - API_SERVER=http://rust-server:4574
+    env_file:
+      - ./bot/.env.prod
     # volumes:
       # for development
       # - ./web/dist:/usr/src/app/dist
