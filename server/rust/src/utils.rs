@@ -3,6 +3,7 @@ use chrono_tz::Asia::Bangkok;
 use serde::Serialize;
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 struct Target {
     for_year: u32,
     for_room: u32,
@@ -11,6 +12,7 @@ struct Target {
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 struct Schedule {
     id: String,
     name: String,
@@ -21,6 +23,7 @@ struct Schedule {
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Period {
     pub is_in_school_time: bool,
     pub day: u32,
@@ -28,6 +31,7 @@ pub struct Period {
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct APISchedule {
     pub subject_name: String,
     pub subject_code: Option<String>,
@@ -41,7 +45,7 @@ pub struct APISchedule {
 }
 
 #[derive(Serialize)]
-#[serde(untagged)]
+#[serde(rename_all = "camelCase")]
 pub enum APIRespond<T> {
     Ok {
         ok: bool,
@@ -63,6 +67,7 @@ impl<T> APIRespond<T> {
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct APIRespondNotInSchoolTime {
     is_in_school_time: bool
 }
