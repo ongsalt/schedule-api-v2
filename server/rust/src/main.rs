@@ -88,7 +88,6 @@ async fn main() -> std::io::Result<()> {
     let res = database.get_schedule(6, 5, 1, 2).await;
     if let Ok(data) = res {
         println!("{}", data.teachers[0]);
-        println!("{}", data.teachers[1]);
     } else {
         println!("I fucked up: {}", res.err().unwrap());
     }
