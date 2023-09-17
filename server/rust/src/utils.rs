@@ -161,7 +161,7 @@ pub fn get_current_period() -> Period {
 
     Period {
         is_in_school_time: (count <= 9) && (count > 0),
-        day: thai_time.day(),
+        day: thai_time.weekday().num_days_from_sunday(),
         period: count,
     }
 }

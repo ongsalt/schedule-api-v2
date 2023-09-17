@@ -65,12 +65,12 @@ services:
     ports:
       - "80:80"
 
-  # bot:
-  #   build: ./bot
-  #   depends_on:
-  #     - rust-server
-  #   env_file:
-  #     - ./bot/.env.prod
+  bot:
+    build: ./bot
+    depends_on:
+      - rust-server
+    env_file:
+      - ./bot/.env.prod
     # volumes:
       # for development
       # - ./web/dist:/usr/src/app/dist

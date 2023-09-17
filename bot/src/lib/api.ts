@@ -21,7 +21,9 @@ export async function getCurrentPeriod(c: string, target: string): Promise<Sched
 
 export async function getSpecificPeriod(c: string, day: number, period: number): Promise<Schedule> {
     try {
-        const res = await fetch(ApiUrl.specific(c ,day, period))
+        const url = ApiUrl.specific(c ,day, period)
+        console.log(`Fetching ${url}`)
+        const res = await fetch(url)
         return await res.json() as Schedule
     } catch(e) {
         throw e
