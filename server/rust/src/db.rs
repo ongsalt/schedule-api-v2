@@ -6,14 +6,13 @@ use crate::utils::APISchedule;
 
 #[derive(sqlx::FromRow)]
 struct Field {
-    name: String,
+    subject_name: String,
     #[sqlx(default)]
     code: Option<String>,
     #[sqlx(default)]
     link: Option<String>,
     #[sqlx(default)]
     room: Option<String>,
-    #[sqlx(rename = "name")]
     teacher_name: String,
 }
 
@@ -57,7 +56,7 @@ impl Db {
 
         let res = sqlx::query_as::<_, Field>(
             "
-            SELECT \"Subject\".name, \"Subject\".code, \"Subject\".link, \"Schedule\".room, \"Teacher\".name  from \"Schedule\" 
+            SELECT \"Subject\".name as subject_name, \"Subject\".code, \"Subject\".link, \"Schedule\".room, \"Teacher\".name as teacher_name  from \"Schedule\" 
             INNER JOIN \"Subject\" ON \"Schedule\".\"subjectId\" = \"Subject\".id 
             INNER JOIN \"_SubjectToTeacher\" ON  \"Subject\".id=\"_SubjectToTeacher\".\"A\"
             INNER JOIN \"Teacher\" ON  \"_SubjectToTeacher\".\"B\"=\"Teacher\".id
@@ -81,7 +80,7 @@ impl Db {
             Err("Not found")
         } else {
             Ok(APISchedule {
-                subject_name: data[0].name.to_owned(),
+                subject_name: data[0].subject_name.to_owned(),
                 subject_code: data[0].code.to_owned(),
                 room: data[0].room.to_owned(),
                 location: "Current".into(), // Next / curernt
